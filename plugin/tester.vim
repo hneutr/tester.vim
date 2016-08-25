@@ -38,8 +38,8 @@ if ! exists("s:default_display_mode")
 	let s:default_display_mode = 'sp'
 endif
 
-if ! exists("s:test_file_suffixes")
-	let s:test_file_suffixes = { 'default' : '_Test' }
+if ! exists("s:settings")
+	let s:settings = { 'default' : { 'suffix' : '_Test' }, }
 endif
 
 function! s:IsValidDisplayMode(display_mode)
@@ -56,25 +56,38 @@ function! g:tester.DisplayMode(display_mode)
 	endif
 endfunction
 
-function! g:tester.Suffixes(suffixes) 
-	if ! empty(a:suffixes)
-		for key in keys(a:suffixes)
-			let s:test_file_suffixes.key = get(a:suffixes, key)
+function! g:tester.Settings(settings) 
+	if ! empty(a:settings)
+		for file_type in keys(a:settings)
+			if ! empty(file_type)
+				for key in keys(file_type)
+					let s:settings.file_type.key = get(file_type, key)
+				endfor
+			endif
 		endfor
 	endif
 endfunction
 
-function! s:IdentifyFile()
-	let l:path = expand('%:p:h')
-	let l:current_file = expand('%:r')
-	let l:extension = expand('%:e')
-
-	let l:suffix = get(s:test_file_suffixes, 'default')
-	if has_key(s:test_file_suffixes, &filetype)
-		let l:suffix = get(s:test_file_suffixes, &filetype)
+" if file_type not found, defaults.
+" if key not found, returns empty string
+function! s:GetSetting(file_type, key)
+	if has_key(s:settings, a:file_type)
+		let l:file_type_settings = get(s:settings, a:file_type)
 	else
+		let l:file_type_settings = get(s:settings, 'default')
+	endif
 
-	let l:alternate_file = l:path . '/'
+	if has_key(l:file_type_settings, a:key)
+		return get(l:file_type_settings, a:key)
+	else
+		return ''
+	endif
+endfunction
+
+function! s:IdentifyFile()
+	let l:suffix = s:GetSetting(&filetype, 'suffix')
+	let l:current_file = expand('%:r')
+	let l:alternate_file = expand('%:p:h') . '/'
 
 	" determine if current file is the testfile or the actual file
 	if l:current_file =~ l:suffix . '$'
@@ -83,7 +96,7 @@ function! s:IdentifyFile()
 		let l:alternate_file .= l:current_file . l:suffix
 	endif
 
-	let l:alternate_file .= '.' . l:extension
+	let l:alternate_file .= '.' . expand('%:e')
 
 	return l:alternate_file
 endfunction
