@@ -1,0 +1,17 @@
+*tester.txt* Plugin to facilitate switching between a test file and the file to be tested.
+
+====================================================================
+CONTENTS                                           *tester-contents*
+
+    1. Interface                                  |builds-interface|
+    2. Configuration                          |builds-configuration|
+    3. Example Configuration                       |builds-examples|
+
+====================================================================
+Section 1: Interface                              *tester-interface*
+
+====================================================================
+Section 2: Configuration                      *tester-configuration*
+
+====================================================================
+Section 3: Example Configuration                   *tester-contents*
