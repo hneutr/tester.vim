@@ -1,4 +1,3 @@
-" ABOUT:
 " This plugin is intended to make switching between a file and it's unit test
 " file easier. 
 "
@@ -6,10 +5,10 @@
 " intended to be 'read only'.
 "
 " CONFIGURATION: 
-" The following functions are available for setting a configuration:
+" These functions can be used to set this plugin's configuration:
 "
 " g:tester.FileInfo()
-"   Use:
+"   Explanation:
 "       configures the structure of a testfile's name for a given filetype.
 "   Parameters:
 "       a dictionary where the keys are filetypes and the values are
@@ -26,7 +25,7 @@
 "
 " INTERFACE:
 " g:tester.OpenFile(window_mode)
-"   Use:
+"   Explanation:
 "       attempts to open the test file paired with the current file (if in a
 "       non-test file) or the 'real' file (if in the test file).
 "   Parameters:
@@ -37,7 +36,6 @@
 "       nnoremap <leader>t :<c-u>call g:tester.OpenFile(vs)<cr>
 "       nnoremap <leader>T :<c-u>call g:tester.OpenFile(sp)<cr>
 "
-" TODOS: 
 
 "====================init====================
 if ! exists("g:tester")
