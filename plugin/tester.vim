@@ -18,13 +18,13 @@
 "       ex:
 "           {
 "               'perl' : {
-"                   '_Test'
+"                   'suffix' : '_Test',
 "               },
-"           }
+"           },
 "
 "
 " INTERFACE:
-" g:tester.OpenFile(window_mode)
+" g:tester.OpenPairedFile(window_mode)
 "   Explanation:
 "       attempts to open the test file paired with the current file (if in a
 "       non-test file) or the 'real' file (if in the test file).
@@ -35,7 +35,6 @@
 "   ex:
 "       nnoremap <leader>t :<c-u>call g:tester.OpenFile(vs)<cr>
 "       nnoremap <leader>T :<c-u>call g:tester.OpenFile(sp)<cr>
-"
 
 "====================init====================
 if ! exists("g:tester")
@@ -54,7 +53,7 @@ if ! exists("s:settings")
 endif
 
 "====================exposed functions====================
-function! g:tester.OpenFile(...)
+function! g:tester.OpenPairedFile(...)
 	let l:file = s:IdentifyFile()
 	if filereadable(l:file)
 		if (a:0 > 0) && (s:IsValidDisplayMode(a:1))
@@ -76,16 +75,22 @@ function! g:tester.DisplayMode(display_mode)
 endfunction
 
 function! g:tester.FileInfo(file_info) 
-	for file_type in keys(a:file_info)
-		if ! empty(file_type)
-			for key in keys(file_type)
-				" verify default is supported
-				if has_key(s:settings['file_type_info']['default'], key)
-					let s:settings['file_type_info']['file_type'][key] = file_type[key]
+	let l:user_file_info = a:file_info
+	if ! empty(l:user_file_info)
+		for file_type in keys(l:user_file_info)
+			if ! empty(l:user_file_info[file_type])
+				if ! has_key(s:settings['file_type_info'], file_type)
+					let s:settings['file_type_info'][file_type] = {}
 				endif
-			endfor
-		endif
-	endfor
+
+				for key in keys(l:user_file_info[file_type])
+					if has_key(s:settings['file_type_info']['default'], key)
+						let s:settings['file_type_info'][file_type][key] = l:user_file_info[file_type][key]
+					endif
+				endfor
+			endif
+		endfor
+	endif
 endfunction
 
 "====================utility====================
